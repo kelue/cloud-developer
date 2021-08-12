@@ -27,7 +27,7 @@ router.get('/:id', requireAuth, async (req: Request, res: Response) => {
         }
         res.status(200).send(item)
     } else {
-        res.status(404).send(`Feed item with id of ${id} not found.`)
+        res.status(404).send(`Item ${id} does not exist.`)
     }
 });
 
@@ -36,8 +36,20 @@ router.get('/:id', requireAuth, async (req: Request, res: Response) => {
 router.patch('/:id', 
     requireAuth, 
     async (req: Request, res: Response) => {
-        //@TODO try it yourself
-        res.send(500).send("not implemented")
+            let { id } = req.params
+            const caption = req.body
+            const item = await FeedItem.findByPk(id)
+            if(item !== null){
+                const updatedItem = await FeedItem.update(caption, {
+                    where: {
+                        id: id
+                    }
+                })
+                res.status(200).send(item)
+            } else {
+                res.send(404).send(`Item ${id} does not exist, cannot update`)
+            }
+    res.send(500).send("not implemented")
 });
 
 
